@@ -1,8 +1,10 @@
 import re
+
 import pandas as pd
 import numpy as np
 
 from scipy.sparse import hstack, csr_matrix
+
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
@@ -14,7 +16,9 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 # 1. LOAD DATASET
 # ============================================================
 
-data = pd.read_csv("dataset/PhiUSIIL_Phishing_URL_Dataset.csv")
+data = pd.read_csv(
+    "dataset/PhiUSIIL_Phishing_URL_Dataset.csv"
+)
 
 data["URL"] = data["URL"].fillna("").astype(str)
 data["label"] = data["label"].astype(int)
@@ -98,15 +102,22 @@ def extract_features(urls):
         hyphen_count = url.count("-")
 
         # Number of digits
-        digit_count = sum(char.isdigit() for char in url)
+        digit_count = sum(
+            char.isdigit()
+            for char in url
+        )
 
         # Number of special characters
         special_count = sum(
-            not char.isalnum() for char in url
+            not char.isalnum()
+            for char in url
         )
 
         # Number of subdomains
-        subdomain_count = max(url_lower.count(".") - 1, 0)
+        subdomain_count = max(
+            url_lower.count(".") - 1,
+            0
+        )
 
         # Contains @
         has_at = int("@" in url)
@@ -122,7 +133,9 @@ def extract_features(urls):
         )
 
         # HTTPS
-        has_https = int(url_lower.startswith("https://"))
+        has_https = int(
+            url_lower.startswith("https://")
+        )
 
         # Suspicious words
         suspicious_word_count = sum(
@@ -133,7 +146,7 @@ def extract_features(urls):
         # Number of slash characters
         slash_count = url.count("/")
 
-        # Number of query parameters
+        # Number of question marks
         question_count = url.count("?")
 
         features.append([
@@ -166,11 +179,21 @@ print("Additional URL features extracted!")
 
 scaler = StandardScaler()
 
-X_train_extra = scaler.fit_transform(X_train_extra)
-X_test_extra = scaler.transform(X_test_extra)
+X_train_extra = scaler.fit_transform(
+    X_train_extra
+)
 
-X_train_extra = csr_matrix(X_train_extra)
-X_test_extra = csr_matrix(X_test_extra)
+X_test_extra = scaler.transform(
+    X_test_extra
+)
+
+X_train_extra = csr_matrix(
+    X_train_extra
+)
+
+X_test_extra = csr_matrix(
+    X_test_extra
+)
 
 
 # ============================================================
@@ -198,7 +221,10 @@ model = LogisticRegression(
     max_iter=1000
 )
 
-model.fit(X_train_final, y_train)
+model.fit(
+    X_train_final,
+    y_train
+)
 
 print("Model trained successfully!")
 
@@ -207,98 +233,158 @@ print("Model trained successfully!")
 # 8. TEST MODEL
 # ============================================================
 
-y_pred = model.predict(X_test_final)
+y_pred = model.predict(
+    X_test_final
+)
 
-accuracy = accuracy_score(y_test, y_pred)
+accuracy = accuracy_score(
+    y_test,
+    y_pred
+)
 
 print("\n===================================")
 print("MODEL RESULTS")
 print("===================================")
 
-print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+print(
+    "\nModel Accuracy:",
+    round(accuracy * 100, 2),
+    "%"
+)
 
 print("\nClassification Report:")
-print(classification_report(
-    y_test,
-    y_pred,
-    target_names=["PHISHING", "LEGITIMATE"]
-))
+
+print(
+    classification_report(
+        y_test,
+        y_pred,
+        target_names=[
+            "PHISHING",
+            "LEGITIMATE"
+        ]
+    )
+)
 
 print("Confusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+
+print(
+    confusion_matrix(
+        y_test,
+        y_pred
+    )
+)
 
 
 # ============================================================
-# 9. CHECK A NEW URL
+# 9. PREDICT A NEW URL
 # ============================================================
 
-print("\nChoose an option:")
-print("1. Enter a URL manually")
-print("2. Test a phishing URL from the dataset")
+def predict_url(url):
 
-choice = input("\nEnter your choice (1 or 2): ")
+    # Convert URL into TF-IDF features
+    test_tfidf = vectorizer.transform(
+        [url]
+    )
 
-if choice == "1":
+    # Extract URL characteristics
+    test_extra = extract_features(
+        [url]
+    )
 
-    test_url = input("\nEnter a URL to check: ")
+    # Scale URL characteristics
+    test_extra = scaler.transform(
+        test_extra
+    )
 
-elif choice == "2":
+    test_extra = csr_matrix(
+        test_extra
+    )
 
-    test_url = data[data["label"] == 0]["URL"].iloc[0]
+    # Combine features
+    test_final = hstack([
+        test_tfidf,
+        test_extra
+    ])
 
-    print("\nTesting a phishing URL from the dataset:")
-    print(test_url)
+    # Prediction
+    prediction = model.predict(
+        test_final
+    )[0]
 
-else:
+    # Prediction probabilities
+    probability = model.predict_proba(
+        test_final
+    )[0]
 
-    print("\nInvalid choice.")
-    exit()
+    # Get confidence
+    if prediction == 1:
+
+        confidence = probability[1]
+
+    else:
+
+        confidence = probability[0]
+
+    return prediction, confidence
 
 
 # ============================================================
-# 10. EXTRACT FEATURES FOR TEST URL
+# 10. COMMAND-LINE TESTING
 # ============================================================
+# This section runs ONLY when this file is executed directly.
+# It will NOT run when Streamlit imports this file.
 
-test_tfidf = vectorizer.transform([test_url])
+if __name__ == "__main__":
 
-test_extra = extract_features([test_url])
-test_extra = scaler.transform(test_extra)
-test_extra = csr_matrix(test_extra)
+    print("\nChoose an option:")
+    print("1. Enter a URL manually")
+    print("2. Test a phishing URL from the dataset")
 
-test_final = hstack([
-    test_tfidf,
-    test_extra
-])
+    choice = input(
+        "\nEnter your choice (1 or 2): "
+    )
 
+    if choice == "1":
 
-# ============================================================
-# 11. PREDICT
-# ============================================================
+        test_url = input(
+            "\nEnter a URL to check: "
+        )
 
-prediction = model.predict(test_final)[0]
+    elif choice == "2":
 
-probability = model.predict_proba(test_final)[0]
+        test_url = data[
+            data["label"] == 0
+        ]["URL"].iloc[0]
 
+        print(
+            "\nTesting a phishing URL from the dataset:"
+        )
 
-# ============================================================
-# 12. DISPLAY RESULT
-# ============================================================
+        print(test_url)
 
-print("\n===================================")
+    else:
 
-if prediction == 1:
+        print("\nInvalid choice.")
+        exit()
 
-    confidence = probability[1] * 100
+    prediction, confidence = predict_url(
+        test_url
+    )
 
-    print("Result: LEGITIMATE URL")
-    print("Confidence:", round(confidence, 2), "%")
+    print("\n===================================")
 
-else:
+    if prediction == 1:
 
-    confidence = probability[0] * 100
+        print("Result: LEGITIMATE URL")
 
-    print("Result: PHISHING URL")
-    print("Confidence:", round(confidence, 2), "%")
+    else:
 
+        print("Result: PHISHING URL")
 
-print("===================================")
+    print(
+        "Confidence:",
+        round(confidence * 100, 2),
+        "%"
+    )
+
+    print("===================================")
