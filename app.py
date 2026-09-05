@@ -23,14 +23,86 @@ st.set_page_config(
 
 
 # ============================================================
-# TITLE
+# CUSTOM CSS
 # ============================================================
 
-st.title("🔐 Phishing URL Detector")
+st.markdown("""
+<style>
+
+    .main-title {
+        text-align: center;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 17px;
+        color: #777;
+        margin-bottom: 30px;
+    }
+
+    .result-box {
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .safe-box {
+        border: 2px solid #21a366;
+        background-color: rgba(33, 163, 102, 0.08);
+    }
+
+    .danger-box {
+        border: 2px solid #d9534f;
+        background-color: rgba(217, 83, 79, 0.08);
+    }
+
+    .result-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .info-card {
+        padding: 18px;
+        border-radius: 10px;
+        background-color: rgba(128, 128, 128, 0.08);
+        margin-top: 15px;
+    }
+
+    .footer {
+        text-align: center;
+        color: #777;
+        font-size: 13px;
+        margin-top: 30px;
+    }
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# HEADER
+# ============================================================
+
+st.markdown(
+    '<div class="main-title">🔐 Phishing URL Detector</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="subtitle">'
+    'Machine Learning Based Cybersecurity Tool'
+    '</div>',
+    unsafe_allow_html=True
+)
 
 st.write(
-    "Enter a URL below to check whether it is "
-    "legitimate or potentially phishing."
+    "Analyze a URL and determine whether it is potentially "
+    "phishing or legitimate using machine learning."
 )
 
 st.divider()
@@ -138,6 +210,7 @@ def train_model():
     )
 
     data["URL"] = data["URL"].fillna("").astype(str)
+
     data["label"] = data["label"].astype(int)
 
     X = data["URL"]
@@ -162,6 +235,7 @@ def train_model():
     )
 
     X_train_tfidf = vectorizer.fit_transform(X_train)
+
     X_test_tfidf = vectorizer.transform(X_test)
 
     # -----------------------------
@@ -169,15 +243,26 @@ def train_model():
     # -----------------------------
 
     X_train_extra = extract_features(X_train)
+
     X_test_extra = extract_features(X_test)
 
     scaler = StandardScaler()
 
-    X_train_extra = scaler.fit_transform(X_train_extra)
-    X_test_extra = scaler.transform(X_test_extra)
+    X_train_extra = scaler.fit_transform(
+        X_train_extra
+    )
 
-    X_train_extra = csr_matrix(X_train_extra)
-    X_test_extra = csr_matrix(X_test_extra)
+    X_test_extra = scaler.transform(
+        X_test_extra
+    )
+
+    X_train_extra = csr_matrix(
+        X_train_extra
+    )
+
+    X_test_extra = csr_matrix(
+        X_test_extra
+    )
 
     # -----------------------------
     # Combine features
@@ -194,7 +279,7 @@ def train_model():
     ])
 
     # -----------------------------
-    # Train Logistic Regression
+    # Logistic Regression
     # -----------------------------
 
     model = LogisticRegression(
@@ -232,39 +317,67 @@ def train_model():
 # ============================================================
 
 with st.spinner(
-    "🧠 Training machine learning model..."
+    "🧠 Preparing machine learning model..."
 ):
 
     model, vectorizer, scaler, accuracy = train_model()
 
 
 # ============================================================
-# MODEL PERFORMANCE
+# SIDEBAR
 # ============================================================
 
-st.sidebar.header("📊 Model Performance")
+with st.sidebar:
 
-st.sidebar.metric(
-    "Accuracy",
-    f"{accuracy * 100:.2f}%"
-)
+    st.header("📊 Model Information")
 
-st.sidebar.write(
-    "Model: Logistic Regression"
-)
+    st.metric(
+        "Model Accuracy",
+        f"{accuracy * 100:.2f}%"
+    )
 
-st.sidebar.write(
-    "Features: TF-IDF + URL characteristics"
-)
+    st.write("**Algorithm:** Logistic Regression")
+
+    st.write(
+        "**Features:** TF-IDF + URL characteristics"
+    )
+
+    st.divider()
+
+    st.subheader("🔍 Features Used")
+
+    st.write(
+        "• URL length\n"
+        "• Dot count\n"
+        "• Hyphen count\n"
+        "• Digit count\n"
+        "• Special characters\n"
+        "• Subdomain count\n"
+        "• IP address detection\n"
+        "• HTTPS detection\n"
+        "• Suspicious keywords\n"
+        "• Slash count\n"
+        "• Query parameters"
+    )
+
+    st.divider()
+
+    st.caption(
+        "This project is intended for educational "
+        "and cybersecurity research purposes."
+    )
 
 
 # ============================================================
 # URL INPUT
 # ============================================================
 
+st.subheader("🌐 Analyze a URL")
+
 url = st.text_input(
-    "🌐 Enter URL",
-    placeholder="https://example.com"
+    "Enter the URL you want to check",
+    placeholder="https://example.com",
+    label_visibility="visible"
 )
 
 
@@ -280,7 +393,7 @@ if st.button(
     if not url.strip():
 
         st.warning(
-            "Please enter a URL."
+            "⚠️ Please enter a URL before checking."
         )
 
     else:
@@ -340,12 +453,23 @@ if st.button(
 
             confidence = probabilities[1] * 100
 
-            st.success(
-                "🟢 LEGITIMATE URL"
+            st.markdown(
+                f"""
+                <div class="result-box safe-box">
+                    <div class="result-title">
+                        🟢 LEGITIMATE URL
+                    </div>
+                    <p>
+                        The model classified this URL
+                        as legitimate.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
             st.metric(
-                "Confidence",
+                "Prediction Confidence",
                 f"{confidence:.2f}%"
             )
 
@@ -353,23 +477,136 @@ if st.button(
 
             confidence = probabilities[0] * 100
 
-            st.error(
-                "🔴 PHISHING URL"
+            st.markdown(
+                f"""
+                <div class="result-box danger-box">
+                    <div class="result-title">
+                        🔴 PHISHING URL
+                    </div>
+                    <p>
+                        The model detected patterns
+                        commonly associated with phishing.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
             st.metric(
-                "Confidence",
+                "Prediction Confidence",
                 f"{confidence:.2f}%"
             )
 
+            st.warning(
+                "⚠️ Avoid entering passwords, payment "
+                "details, or other sensitive information "
+                "on suspicious websites."
+            )
 
 # ============================================================
-# FOOTER
+# URL ANALYSIS
+# ============================================================
+
+if url.strip():
+
+    st.subheader("🔎 URL Analysis")
+
+    analysis_features = extract_features([url])[0]
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "URL Length",
+            int(analysis_features[0])
+        )
+
+        st.metric(
+            "Dots",
+            int(analysis_features[1])
+        )
+
+    with col2:
+        st.metric(
+            "Digits",
+            int(analysis_features[3])
+        )
+
+        st.metric(
+            "Subdomains",
+            int(analysis_features[5])
+        )
+
+    with col3:
+        st.metric(
+            "Suspicious Keywords",
+            int(analysis_features[9])
+        )
+
+        if analysis_features[8] == 1:
+            st.success("🔒 HTTPS Detected")
+        else:
+            st.warning("⚠️ HTTPS Not Detected")
+
+    if analysis_features[6] == 1:
+        st.warning("⚠️ '@' symbol detected in URL")
+
+    if analysis_features[7] == 1:
+        st.warning("⚠️ IP address detected in URL")
+        
+# ============================================================
+# HOW IT WORKS
+# ============================================================
+
+st.divider()
+
+with st.expander("🧠 How does this detector work?"):
+
+    st.write(
+        "The system uses machine learning to analyze "
+        "patterns within URLs."
+    )
+
+    st.write(
+        "**Step 1 — TF-IDF:** "
+        "Character-level TF-IDF extracts patterns from "
+        "the URL text."
+    )
+
+    st.write(
+        "**Step 2 — Feature Engineering:** "
+        "The system calculates characteristics such as "
+        "URL length, number of dots, digits, subdomains, "
+        "suspicious keywords, and HTTPS usage."
+    )
+
+    st.write(
+        "**Step 3 — Classification:** "
+        "The extracted features are combined and passed "
+        "to a Logistic Regression classifier."
+    )
+
+    st.write(
+        "**Step 4 — Prediction:** "
+        "The model predicts whether the URL is "
+        "Phishing or Legitimate and provides a "
+        "confidence score."
+    )
+
+
+# ============================================================
+# DISCLAIMER
 # ============================================================
 
 st.divider()
 
 st.caption(
-    "⚠️ This tool is an ML-based prediction system and "
-    "should not be treated as a guarantee of website safety."
+    "⚠️ This tool provides an ML-based prediction and "
+    "is not a guarantee of website safety. "
+    "Always verify suspicious links using trusted "
+    "security resources."
+)
+
+st.caption(
+    "🔐 Phishing URL Detector • Machine Learning + Cybersecurity"
 )
