@@ -1,6 +1,6 @@
-# 🔐 Phishing URL Detection Using Machine Learning
+#  Phishing URL Detection Using Machine Learning
 
-## 📌 Project Overview
+##  Project Overview
 
 Phishing attacks are one of the most common cybersecurity threats, where attackers use deceptive URLs to trick users into visiting malicious websites or revealing sensitive information.
 
@@ -10,7 +10,7 @@ A Streamlit web application provides an interactive interface where users can en
 
 ---
 
-## 🎯 Objective
+## Objective
 
 The main objective of this project is to develop an automated system for detecting potentially phishing URLs using machine learning.
 
@@ -24,19 +24,19 @@ The project aims to:
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔍 URL-based phishing detection
-- 🤖 Machine learning classification
-- 🧠 TF-IDF character-level feature extraction
-- 🔐 URL feature engineering
-- 📊 Prediction confidence score
-- 🌐 Interactive Streamlit web application
-- 📈 Model evaluation using accuracy, precision, recall and F1-score
+-  URL-based phishing detection
+- Machine learning classification
+- TF-IDF character-level feature extraction
+- URL feature engineering
+- Prediction confidence score
+- Interactive Streamlit web application
+- Model evaluation using accuracy, precision, recall and F1-score
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Python**
 - **Pandas**
@@ -50,7 +50,7 @@ The project aims to:
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 The project uses the **PhiUSIIL Phishing URL Dataset**.
 
@@ -143,7 +143,7 @@ These features help the model identify structural and lexical patterns commonly 
 
 ---
 
-**## 🤖 Machine Learning Model**
+**## Machine Learning Model**
 
 <details>
 <summary>Click to expand Machine Learning Model</summary>
@@ -167,7 +167,7 @@ The TF-IDF vectorizer uses character n-grams ranging from **2 to 5 characters**.
 
 ---
 
-**## 📈 Results**
+**## Results**
 
 <details>
 <summary>Click to expand Results</summary>
@@ -201,7 +201,7 @@ The results demonstrate that the model performs strongly on the test dataset.
 
 ---
 
-**## 🖥️ Web Application**
+**## Web Application**
 
 The trained model is integrated into a **Streamlit** web application.
 
@@ -228,7 +228,7 @@ Confidence:
 
 ---
 
-**## ⚙️ How to Run**
+**## How to Run**
 
 <details>
 <summary>Click to expand How to Run</summary>
@@ -280,7 +280,7 @@ The application will open in your browser.
 
 ---
 
-**## 📁 Project Structure**
+**## Project Structure**
 
 ```text
 phishing-url-detector/
@@ -304,7 +304,7 @@ phishing-url-detector/
 
 ---
 
-**## ⚠️ Limitations**
+**## Limitations**
 
 <details>
 <summary>Click to expand Limitations</summary>
@@ -325,7 +325,7 @@ This project is intended as a machine-learning-based research and educational cy
 
 ---
 
-**## 🚀 Future Improvements**
+**## Future Improvements**
 
 <details>
 <summary>Click to expand Future Improvements</summary>
@@ -346,7 +346,7 @@ Possible improvements include:
 
 ---
 
-**## 👩‍💻 Author**
+**## Author**
 
 **Jhansi**
 
