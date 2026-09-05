@@ -309,8 +309,6 @@ phishing-url-detector/
 └── src/
 ```
 
-> The dataset and virtual environment are excluded from GitHub using `.gitignore`.
-
 ---
 
 **## Limitations**
