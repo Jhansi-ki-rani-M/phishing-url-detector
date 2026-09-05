@@ -212,8 +212,9 @@ Users can enter a URL into the application and receive:
 * Confidence score
 
 Example:
-<img width="959" height="412" alt="Screenshot 2026-09-05 183651" src="https://github.com/user-attachments/assets/9390b379-04a4-4f05-a070-11176e71c86e" />
 <img width="959" height="416" alt="Screenshot 2026-09-05 183643" src="https://github.com/user-attachments/assets/5560783f-21ad-4956-97f8-2b9fa95653ef" />
+<img width="959" height="412" alt="Screenshot 2026-09-05 183651" src="https://github.com/user-attachments/assets/9390b379-04a4-4f05-a070-11176e71c86e" />
+
 <img width="959" height="412" alt="Screenshot 2026-09-05 183603" src="https://github.com/user-attachments/assets/17192468-1378-4055-a5d5-8e640d5c7d99" />
 <img width="959" height="410" alt="Screenshot 2026-09-05 183547" src="https://github.com/user-attachments/assets/70b56edb-e5ea-4628-a88b-15942d8d693f" />
 <img width="959" height="409" alt="Screenshot 2026-09-05 183531" src="https://github.com/user-attachments/assets/09c646a4-106f-4472-99fb-3d109fe3be21" />
