@@ -1,9 +1,0 @@
-url,label
-https://www.google.com,legitimate
-https://www.microsoft.com,legitimate
-https://www.github.com,legitimate
-https://www.wikipedia.org,legitimate
-http://secure-login-example.com,phishing
-http://verify-account-example.com,phishing
-http://update-password-example.com,phishing
-http://free-prize-example.com,phishing
